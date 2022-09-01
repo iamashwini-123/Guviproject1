@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: Calibri, Helvetica, sans-serif;
+            background-color: lightpink;
+        }
+
+        #drop {
+            position: absolute;
+            left: 70vw;
+            top: 5vh;
+        }
+        #btnLogout {
+            position: absolute;
+            
+            left: 69vw;
+            top: 4vh;
+            color: lightpink;
+        }
+
+        #btnExport {
+            position: absolute;
+            left: 60vw;
+            top: 4vh;
+           
+        }
+        #header{
+            margin-left:5vw;
+        }
+    </style>
+    <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
+</head>
+
+<body>
+    <h2 id="header"><B>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Welcome To Stock Market Investement Portofolio</B>
+    <input id="btnExport" class="btn btn-warning pull-right"
+       type="button" value="Let's Export'" /></h2>
+    <input id="btnLogout" class="btn btn-danger pull-right"
+           type="button" value="Logout" />
+    <label style="margin-left:17vw"for="cars">Choose a Stock Details:</label>
+    <select name='job' id='job'>
+        <option value=1>Annual income statements</option>
+        <option value=2>Annual balance sheet statements</option>
+        <option value=3>Annual cash flow statements</option>
+        <option value=4>Company financial statements as reported</option>
+        <option value=5>Full financial statement</option>
+        <option value=6>SEC RSS Feeds</option>
+        <option value=7>SEC Filings</option>
+        <option value=8>Company fundamental ratios</option>
+        <option value=9>Company financial ratios</option>
+        <option value=10>Company annual enterprise value</option>
+        <option value=11>Income statements growth</option>
+        <option value=12>Annual balance sheet growth</option>
+        <option value=14>Annual cash flow statements growth</option>
+        <option value=15>Company TTM key metrics</option>
+        <option value=16>Company annual key metrics</option>
+        <option value=17>Company annual financial statement growth</option>
+        <option value=18>Company Rating</option>
+        <option value=19>Historical companies rating</option>
+        <option value=20>Company Discounted cash flow value</option>
+        <option value=21>Companies Historical Discounted cash flow value</option>
+        <option value=22>Price targets summary for symbol</option>
+
+    </select>
+    <br><br>
+
+    <!--<div id="drop" class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+            Tutorials
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="#">HTML</a></li>
+            <li><a href="#">CSS</a></li>
+            <li><a href="#">JavaScript</a></li>
+            <li class="divider"></li>
+            <li><a href="#">About Us</a></li>
+        </ul>
+    </div>-->
+    <div id="myGrid" style="height: 80vh; width: 90%; margin-left: 5vw;" class="ag-theme-balham"></div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var input = document.getElementById('job');
+            if (localStorage['job']) { // if job is set
+                input.value = localStorage['job']; // set the value
+            }
+            input.onchange = function () {
+                localStorage['job'] = this.value; // change localStorage on change
+            }
+        });
+    </script>
+    <script type="text/javascript" charset="utf-8">
+        const columnDefs = [
+        ];
+
+        const gridOptions = {
+
+            defaultColDef: {
+                sortable: true,
+                filter: 'agTextColumnFilter',
+                resizable: true
+            },
+
+            columnDefs: columnDefs,
+            enableSorting: true,
+            enableFilter: true,
+            pagination: true
+        };
+
+        const eGridDiv = document.querySelector('#myGrid');
+        new agGrid.Grid(eGridDiv, gridOptions);
+        function dynamicallyConfigureColumnsFromObject(anObject) {
+            const colDefs = gridOptions.api.getColumnDefs();
+            colDefs.length = 0;
+            const keys = Object.keys(anObject)
+            keys.forEach(key => colDefs.push({ field: key }));
+            gridOptions.api.setColumnDefs(colDefs);
+        }
+        var a = ['https://6308e820722029d9dddb19c4.mockapi.io/articles',
+            'https://financialmodelingprep.com/api/v3/income-statement/AAPL?limit=120&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/balance-sheet-statement/AAPL?limit=120&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/cash-flow-statement/AAPL?limit=120&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/income-statement-as-reported/AAPL?limit=10&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/financial-statement-full-as-reported/AAPL?apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/rss_feed?page=0&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/sec_filings/AAPL?page=0&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/sec_filings/AAPL?type=10-K&page=0&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/ratios/AAPL?limit=40&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/ratios/AAPL?limit=40&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/enterprise-values/AAPL?limit=40&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/income-statement-growth/AAPL?limit=40&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/balance-sheet-statement-growth/AAPL?limit=40&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/cash-flow-statement-growth/AAPL?limit=40&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/key-metrics-ttm/AAPL?limit=40&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/key-metrics/AAPL?limit=40&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/financial-growth/AAPL?limit=20&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/rating/AAPL?apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/historical-rating/AAPL?limit=100&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/discounted-cash-flow/AAPL?apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v3/historical-discounted-cash-flow-statement/AAPL?apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v4/price-target-summary?symbol=AAPL&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v4/price-target-analyst-name?name=Tim%20Anderson&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v4/price-target-analyst-company?company=Barclays&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v4/historical/employee_count?symbol=AAPL&apikey=6a0066231512fff5d17face7aafd22b6',
+            'https://financialmodelingprep.com/api/v4/insider/ownership/acquisition_of_beneficial_ownership?symbol=AAPL&apikey=6a0066231512fff5d17face7aafd22b6']
+        index = 0;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var input = document.getElementById('job');
+            if (localStorage['job']) { // if job is set
+                input.value = localStorage['job']; // set the value
+            }
+            input.onchange = function () {
+                localStorage['job'] = this.value;
+                var index = parseInt(localStorage.job);
+                // simple JSON example
+                var b = 'https://6308e820722029d9dddb19c4.mockapi.io/articles'
+                fetch(a[index]).then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    dynamicallyConfigureColumnsFromObject(data[0])
+                    gridOptions.api.setRowData(data);
+                })
+                // change localStorage on change
+            }
+        });
+
+
+        // SWAPI example
+        //    var a ='https://financialmodelingprep.com/api/v3/income-statement/AAPL?limit=120&apikey=eeea1fe99c457c5849fd829ba6a77d79'
+        //    fetch('https://6308e820722029d9dddb19c4.mockapi.io/articles',
+        //    {
+        //        method: 'GET',
+        //        headers: {
+        //                    'Content-Type': 'application/json'
+        //                }
+        //    }
+        //).then(function (response) {
+        //    return response.json();
+        //}).then(function (data) {
+        //    dynamicallyConfigureColumnsFromObject(data.results[0])
+        //    gridOptions.api.setRowData(data.results);
+        //})
+
+    </script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if (localStorage.getItem('accessToken') == null) {
+                window.location.href = "Login.html";
+
+            }
+        });
+        </script>
+            <script type="text/javascript">
+            $('#btnLogout').click(function () {
+                localStorage.removeItem('accessToken');
+                window.location.href = "Login.html";
+            });
+                $("body").on("click", "#btnExport", function () {
+                    html2canvas($('[id*=myGrid]')[0], {
+                        onrendered: function (canvas) {
+                            var data = canvas.toDataURL();
+                            var docDefinition = {
+                                content: [{
+                                    image: data,
+                                    width: 500
+                                }]
+                            };
+                            pdfMake.createPdf(docDefinition).download("Table.pdf");
+                        }
+                    });
+            });
+    </script>
+</body>
+
+</html>
